@@ -165,4 +165,123 @@ body {
     display: block;
     margin: 0 auto;
     pointer-events: none;
+}
+
+/* Force vertical orientation and responsive design for small screens */
+@media screen and (max-width: 768px) {
+    html, body {
+        min-height: 100%;
+        min-width: 100%;
+    }
+    
+    .container {
+        padding: 5px;
+    }
+    
+    .image-wrapper {
+        padding: 5px;
+    }
+    
+    .token {
+        width: 18px;
+        height: 18px;
+        font-size: 9px;
+    }
+    
+    .ball {
+        width: 22px;
+        height: 22px;
+    }
+}
+
+/* Force portrait orientation */
+@media screen and (orientation: landscape) and (max-width: 900px) {
+    .container {
+        transform: rotate(90deg);
+        transform-origin: center center;
+        width: 100vh;
+        height: 100vw;
+        overflow: hidden;
+    }
+    
+    /* Adjust token positions for forced portrait view */
+    .token {
+        transform-origin: center center;
+    }
+}
+
+/* Extra small devices */
+@media screen and (max-width: 480px) {
+    /* Stack tokens in two rows for very small screens */
+    /* Red team tokens */
+    .token.red-ktoken, .token.red-token {
+        top: 6% !important;
+    }
+    
+    /* Space out red tokens wider */
+    .token.red-ktoken { left: 10% !important; }
+    .token.red-token[style*="left: 18%"] { left: 19% !important; }
+    .token.red-token[style*="left: 21%"] { left: 28% !important; }
+    .token.red-token[style*="left: 24%"] { left: 37% !important; }
+    .token.red-token[style*="left: 27%"] { left: 46% !important; }
+    .token.red-token[style*="left: 30%"] { left: 55% !important; }
+    .token.red-token[style*="left: 33%"] { left: 64% !important; }
+    .token.red-token[style*="left: 36%"] { left: 73% !important; }
+    .token.red-token[style*="left: 39%"] { left: 82% !important; }
+    .token.red-token[style*="left: 42%"] { left: 91% !important; }
+    
+    /* Additional red token at the end, move to second row left side */
+    .token.red-token[style*="left: 45%"] { 
+        left: 10% !important;
+        top: 14% !important;
+    }
+    
+    /* White team tokens */
+    .token.white-ktoken, .token.white-token {
+        top: 14% !important;
+    }
+    
+    /* Space out white tokens wider */
+    .token.white-ktoken { left: 19% !important; }
+    .token.white-token[style*="left: 58%"] { left: 28% !important; }
+    .token.white-token[style*="left: 61%"] { left: 37% !important; }
+    .token.white-token[style*="left: 64%"] { left: 46% !important; }
+    .token.white-token[style*="left: 67%"] { left: 55% !important; }
+    .token.white-token[style*="left: 70%"] { left: 64% !important; }
+    .token.white-token[style*="left: 73%"] { left: 73% !important; }
+    .token.white-token[style*="left: 76%"] { left: 82% !important; }
+    .token.white-token[style*="left: 79%"] { left: 91% !important; }
+    
+    /* Last two white tokens, move to second row */
+    .token.white-token[style*="left: 82%"] {
+        left: 19% !important;
+        top: 22% !important;
+    }
+    
+    .token.white-token[style*="left: 85%"] {
+        left: 28% !important;
+        top: 22% !important;
+    }
+    
+    /* Make tokens smaller */
+    .token {
+        width: 16px;
+        height: 16px;
+        font-size: 8px;
+    }
+    
+    .ball {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .download-btn {
+        font-size: 14px;
+        padding: 8px 12px;
+    }
+    
+    .download-btn svg {
+        width: 16px;
+        height: 16px;
+    }
 } 

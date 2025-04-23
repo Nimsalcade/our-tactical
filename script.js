@@ -15,6 +15,27 @@ document.addEventListener('DOMContentLoaded', () => {
         alert('Failed to load the image. Please check if the file exists and has the correct name.');
     });
     
+    // Lock screen orientation to portrait if possible (mobile only)
+    const lockOrientation = () => {
+        try {
+            if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock('portrait').catch(e => {
+                    console.log('Orientation lock not supported or allowed:', e);
+                });
+            }
+        } catch (e) {
+            console.log('Orientation API not supported');
+        }
+    };
+    
+    // Try to lock orientation on mobile
+    if (/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)) {
+        lockOrientation();
+        
+        // Re-try on orientation change
+        window.addEventListener('orientationchange', lockOrientation);
+    }
+    
     // Prevent default selection behavior
     document.addEventListener('selectstart', (e) => {
         if (e.target.classList.contains('token') || 
@@ -47,12 +68,37 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
+    // Adjust token layout for mobile screens
+    function adjustTokensForScreenSize() {
+        const isMobile = window.innerWidth <= 480;
+        
+        // Allow CSS media queries to handle most of the layout changes
+        // This function can be extended for more complex rearrangements if needed
+        if (isMobile) {
+            // Force update of percentage positions after media queries apply
+            setTimeout(convertTokenPositionsToPercentages, 100);
+        }
+    }
+    
     // Run conversion on load
-    window.addEventListener('load', convertTokenPositionsToPercentages);
+    window.addEventListener('load', () => {
+        convertTokenPositionsToPercentages();
+        adjustTokensForScreenSize();
+    });
     
     // Run conversion on resize and orientation change
-    window.addEventListener('resize', convertTokenPositionsToPercentages);
-    window.addEventListener('orientationchange', convertTokenPositionsToPercentages);
+    window.addEventListener('resize', () => {
+        convertTokenPositionsToPercentages();
+        adjustTokensForScreenSize();
+    });
+    
+    window.addEventListener('orientationchange', () => {
+        // Wait for orientation change to complete
+        setTimeout(() => {
+            convertTokenPositionsToPercentages();
+            adjustTokensForScreenSize();
+        }, 200);
+    });
     
     // Make tokens and ball draggable
     tokens.forEach(token => {
@@ -129,8 +175,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const imageWrapperRect = imageWrapper.getBoundingClientRect();
         
         // Calculate initial offsets
-        const offsetX = (e.clientX || e.touches[0].clientX) - tokenRect.left;
-        const offsetY = (e.clientY || e.touches[0].clientY) - tokenRect.top;
+        const offsetX = (e.clientX || (e.touches && e.touches[0].clientX)) - tokenRect.left;
+        const offsetY = (e.clientY || (e.touches && e.touches[0].clientY)) - tokenRect.top;
         
         // Add active class to dragged token
         token.classList.add('dragging');
@@ -170,12 +216,13 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Function to stop dragging
         function stopDrag(e) {
-            e.preventDefault();
+            if (e) e.preventDefault();
             token.classList.remove('dragging');
             document.removeEventListener('mousemove', dragToken);
             document.removeEventListener('mouseup', stopDrag);
             document.removeEventListener('touchmove', dragToken);
             document.removeEventListener('touchend', stopDrag);
+            document.removeEventListener('touchcancel', stopDrag);
         }
         
         // Add event listeners for dragging
@@ -183,5 +230,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.addEventListener('mouseup', stopDrag);
         document.addEventListener('touchmove', dragToken, { passive: false });
         document.addEventListener('touchend', stopDrag);
+        document.addEventListener('touchcancel', stopDrag);
     }
 }); 
