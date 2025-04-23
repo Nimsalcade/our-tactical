@@ -167,6 +167,51 @@ body {
     pointer-events: none;
 }
 
+/* Force portrait mode for ALL mobile devices, no matter the size */
+@media screen and (orientation: landscape) and (max-width: 900px) {
+    html {
+        transform: rotate(-90deg);
+        transform-origin: left top;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100vh;
+        height: 100vw;
+        overflow-x: hidden;
+        overflow-y: hidden;
+    }
+
+    body {
+        margin: 0;
+        width: 100vh;
+        height: 100vw;
+        transform: none;
+        transform-origin: unset;
+        position: relative;
+        top: 0;
+        left: 0;
+    }
+    
+    .container {
+        height: 100%;
+        width: 100%;
+        padding: 10px;
+        transform: none;
+    }
+
+    .image-wrapper {
+        max-height: none;
+        height: calc(100% - 60px);
+    }
+
+    #mainImage {
+        max-height: none;
+        height: 100%;
+        width: auto;
+        margin: 0 auto;
+    }
+}
+
 /* Force vertical orientation and responsive design for small screens */
 @media screen and (max-width: 768px) {
     html, body {
@@ -189,24 +234,8 @@ body {
     }
     
     .ball {
-        width: 22px;
-        height: 22px;
-    }
-}
-
-/* Force portrait orientation */
-@media screen and (orientation: landscape) and (max-width: 900px) {
-    .container {
-        transform: rotate(90deg);
-        transform-origin: center center;
-        width: 100vh;
-        height: 100vw;
-        overflow: hidden;
-    }
-    
-    /* Adjust token positions for forced portrait view */
-    .token {
-        transform-origin: center center;
+        width: 20px;
+        height: 20px;
     }
 }
 
@@ -271,8 +300,8 @@ body {
     }
     
     .ball {
-        width: 16px;
-        height: 16px;
+        width: 18px;
+        height: 18px;
     }
     
     .download-btn {

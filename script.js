@@ -18,22 +18,65 @@ document.addEventListener('DOMContentLoaded', () => {
     // Lock screen orientation to portrait if possible (mobile only)
     const lockOrientation = () => {
         try {
+            // Force portrait orientation
             if (screen.orientation && screen.orientation.lock) {
-                screen.orientation.lock('portrait').catch(e => {
-                    console.log('Orientation lock not supported or allowed:', e);
+                screen.orientation.lock('portrait').catch(() => {
+                    // If locking fails, try to force refresh
+                    if (Math.abs(window.orientation) === 90) {
+                        window.scrollTo(0, 0);
+                    }
                 });
             }
+            
+            // iOS specific handling
+            if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                if (window.orientation === 90 || window.orientation === -90) {
+                    window.scrollTo(0, 0);
+                    document.body.style.minHeight = '100vh';
+                    setTimeout(() => {
+                        window.scrollTo(0, 0);
+                        document.documentElement.style.height = '100%';
+                        document.body.style.height = '100%';
+                    }, 50);
+                }
+            }
         } catch (e) {
-            console.log('Orientation API not supported');
+            console.log('Orientation control error:', e);
         }
     };
     
     // Try to lock orientation on mobile
-    if (/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)) {
+    if (/Android|iPhone|iPad|iPod|Mobile|Tablet|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
         lockOrientation();
         
-        // Re-try on orientation change
-        window.addEventListener('orientationchange', lockOrientation);
+        // Handle orientation changes
+        window.addEventListener('orientationchange', () => {
+            // Force immediate scroll reset
+            window.scrollTo(0, 0);
+            
+            // Apply orientation lock with delay for iOS
+            setTimeout(lockOrientation, 100);
+            
+            // Additional handling for iOS devices
+            if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                setTimeout(() => {
+                    window.scrollTo(0, 0);
+                    // Force layout recalculation
+                    document.body.style.minHeight = '100vh';
+                    document.documentElement.style.height = '100%';
+                    document.body.style.height = '100%';
+                    // Adjust tokens after orientation change
+                    adjustTokensForScreenSize();
+                }, 200);
+            }
+        });
+        
+        // Additional event listeners for iOS
+        window.addEventListener('resize', () => {
+            if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                window.scrollTo(0, 0);
+            }
+        });
     }
     
     // Prevent default selection behavior
@@ -97,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             convertTokenPositionsToPercentages();
             adjustTokensForScreenSize();
-        }, 200);
+        }, 300);
     });
     
     // Make tokens and ball draggable
