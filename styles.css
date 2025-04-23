@@ -4,10 +4,16 @@
     box-sizing: border-box;
 }
 
+html, body {
+    height: 100%;
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+}
+
 body {
     font-family: Arial, sans-serif;
     background-color: #f5f5f5;
-    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -17,16 +23,26 @@ body {
 .container {
     width: 100%;
     max-width: 1200px;
-    padding: 20px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
 }
 
 .image-wrapper {
     background-color: white;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
+    padding: 10px;
     text-align: center;
     position: relative;
+    width: 100%;
+    max-height: 85vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* Player tokens styles */
@@ -114,7 +130,8 @@ body {
 .download-container {
     display: flex;
     justify-content: center;
-    margin-top: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .download-btn {
@@ -143,6 +160,7 @@ body {
 
 #mainImage {
     max-width: 100%;
+    max-height: 85vh;
     height: auto;
     display: block;
     margin: 0 auto;

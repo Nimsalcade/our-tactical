@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const mainImage = document.getElementById('mainImage');
     const tokens = document.querySelectorAll('.token');
     const downloadBtn = document.getElementById('downloadBtn');
+    const imageWrapper = document.querySelector('.image-wrapper');
     
     // Add a simple load event to ensure the image loads properly
     mainImage.addEventListener('load', () => {
@@ -22,6 +23,36 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
         }
     });
+    
+    // Convert any inline styles from pixels to percentages
+    function convertTokenPositionsToPercentages() {
+        tokens.forEach(token => {
+            if (token.style.left && token.style.top) {
+                // Skip if already using percentage values
+                if (token.style.left.includes('%') && token.style.top.includes('%')) {
+                    return;
+                }
+                
+                const tokenRect = token.getBoundingClientRect();
+                const wrapperRect = imageWrapper.getBoundingClientRect();
+                
+                // Calculate token position as percentages of the wrapper
+                const leftPercent = ((tokenRect.left - wrapperRect.left + tokenRect.width / 2) / wrapperRect.width) * 100;
+                const topPercent = ((tokenRect.top - wrapperRect.top + tokenRect.height / 2) / wrapperRect.height) * 100;
+                
+                // Set the positions as percentages
+                token.style.left = `${leftPercent}%`;
+                token.style.top = `${topPercent}%`;
+            }
+        });
+    }
+    
+    // Run conversion on load
+    window.addEventListener('load', convertTokenPositionsToPercentages);
+    
+    // Run conversion on resize and orientation change
+    window.addEventListener('resize', convertTokenPositionsToPercentages);
+    window.addEventListener('orientationchange', convertTokenPositionsToPercentages);
     
     // Make tokens and ball draggable
     tokens.forEach(token => {
@@ -95,7 +126,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!token) return;
         
         const tokenRect = token.getBoundingClientRect();
-        const imageWrapper = document.querySelector('.image-wrapper');
         const imageWrapperRect = imageWrapper.getBoundingClientRect();
         
         // Calculate initial offsets
@@ -127,10 +157,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 top = imageWrapperRect.height - tokenRect.height;
             }
             
-            // Position the token
+            // Convert to percentage positions for responsiveness
+            const leftPercent = (left / imageWrapperRect.width) * 100;
+            const topPercent = (top / imageWrapperRect.height) * 100;
+            
+            // Position the token using percentages
             token.style.position = 'absolute';
-            token.style.left = `${left}px`;
-            token.style.top = `${top}px`;
+            token.style.left = `${leftPercent}%`;
+            token.style.top = `${topPercent}%`;
             token.style.zIndex = '100';
         }
         
