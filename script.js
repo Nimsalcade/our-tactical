@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const mainImage = document.getElementById('mainImage');
     const tokens = document.querySelectorAll('.token');
+    const downloadBtn = document.getElementById('downloadBtn');
     
     // Add a simple load event to ensure the image loads properly
     mainImage.addEventListener('load', () => {
@@ -26,6 +27,64 @@ document.addEventListener('DOMContentLoaded', () => {
     tokens.forEach(token => {
         token.addEventListener('mousedown', startDrag);
         token.addEventListener('touchstart', startDrag, { passive: false });
+    });
+    
+    // Download functionality
+    downloadBtn.addEventListener('click', () => {
+        // Show loading indicator or message
+        downloadBtn.disabled = true;
+        downloadBtn.textContent = 'Generating...';
+        
+        // Small delay to update UI before capturing
+        setTimeout(() => {
+            const captureArea = document.getElementById('captureArea');
+            
+            // Capture the tactical board
+            html2canvas(captureArea, {
+                scale: 2, // Higher scale for better quality
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: null
+            }).then(canvas => {
+                // Convert to JPEG
+                const jpegUrl = canvas.toDataURL('image/jpeg', 0.9);
+                
+                // Create download link
+                const downloadLink = document.createElement('a');
+                downloadLink.href = jpegUrl;
+                downloadLink.download = 'football-tactic.jpg';
+                
+                // Trigger download
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+                
+                // Reset button
+                downloadBtn.disabled = false;
+                downloadBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Download Tactic
+                `;
+            }).catch(err => {
+                console.error('Error generating image', err);
+                downloadBtn.disabled = false;
+                downloadBtn.textContent = 'Error - Try Again';
+                setTimeout(() => {
+                    downloadBtn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Download Tactic
+                    `;
+                }, 3000);
+            });
+        }, 100);
     });
     
     function startDrag(e) {
