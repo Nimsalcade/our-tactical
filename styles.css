@@ -58,8 +58,8 @@ body {
 }
 
 .token {
-    width: 24px;
-    height: 24px;
+    width: 21px;
+    height: 21px;
     border-radius: 50%;
     display: flex;
     justify-content: center;
@@ -109,8 +109,8 @@ body {
 
 /* Soccer ball styles */
 .ball {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     background: none;
     border: none;
     display: flex;
